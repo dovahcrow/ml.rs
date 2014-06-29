@@ -5,8 +5,8 @@ authors = [ "wooya@silic.org" ]
 
 [dependencies.matrixrs]
 name = "matrixrs"
-git = "https://github.com/doomsplayer/matrixrs.git"
+git = "https://github.com/doomsplayer/matrixrs"
 
 [[lib]]
 name = "pagerank"
-path = "src/pagerank/mod.rs"
+path = "src/pagerank/lib.rs"
