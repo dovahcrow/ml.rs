@@ -50,9 +50,9 @@ fn test_1() {
 		];
 	let adjm = vec.iter().map(|x| x.clone()).to_matrix(4,4);
 
-	let mut rank = Matrix::from_sliceslice(&[&[0.2,0.4,0.2,0.2]]).transpose();
+	let mut rank = [0.2f64,0.4,0.2,0.2].iter().map(|x| x.clone()).to_matrix(1,4).transpose();
 
-	rank = pagerank(&adjm,&rank, 1000, 0.85, 0.001); 	
+	rank = pagerank(&adjm,&rank, 1000, 0.85, 0.001); 
 	println!("{},{}",rank,rank.iter().fold(0f64,|acc,b| acc+b));  	
 	
 }
