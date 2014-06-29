@@ -8,5 +8,14 @@ name = "matrixrs"
 git = "https://github.com/doomsplayer/matrixrs"
 
 [[lib]]
+name = "kmeans"
+path = "src/clustering/kmeans/lib.rs"
+
+
+[[bin]]
+name = "kmeans-example"
+path = "src/clustering/kmeans/example.rs"
+
+[[lib]]
 name = "pagerank"
 path = "src/pagerank/lib.rs"

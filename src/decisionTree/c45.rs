@@ -1,15 +1,6 @@
-#![allow(unused_imports)]
-#![allow(dead_code)]
-#![allow(non_camel_case_types)]
-#![allow(non_snake_case_functions)]
-#![allow(uppercase_variables)] 
 extern crate debug;
 
 mod c45 {
-	use super::matrix::Matrix;
-	use std::num::Zero;
-
-
 	pub struct C45<T> {
 		pub data: Matrix<T>,
 	}
