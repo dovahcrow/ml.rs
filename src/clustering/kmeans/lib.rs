@@ -1,27 +1,28 @@
 //! Kmeans -- Kmeans Algorithm in Rust
 
-#![crate_id = "kmeans#0.0.1"]
+#![crate_name = "kmeans"]
 #![crate_type="lib"]
 #![allow(unused_must_use)]
 #![allow(missing_doc)]
 extern crate matrixrs;
-use matrixrs::{Matrix,ToMatrix};
-use std::num::{zero,Num};
+use matrixrs::{Matrix, ToMatrix};
+use std::num::{zero};
+use std::rand::{Rng, StdRng};
+use std::rand::distributions::range::SampleRange;
+use std::default::Default;
 
 pub struct KMeans<T> {
 	data: Matrix<T>,
-	dimension: (uint,uint)
 }
 
-impl<T:Clone+Num> KMeans<T> {
+impl<T:Primitive+SampleRange+Default> KMeans<T> {
 	pub fn new(data: Matrix<T>) -> KMeans<T> {
 		KMeans {
-			dimension: data.size(),
 			data: data
 		}
 	}
 
-	pub fn gen_center(points: Matrix<T>) -> Matrix<T> {
+	pub fn gen_center(points: &Matrix<T>) -> Matrix<T> {
 		let mut rev_points = !points;
 
 		rev_points.rows().map(
@@ -30,10 +31,10 @@ impl<T:Clone+Num> KMeans<T> {
 		}).to_matrix(1, points.col) 
 	}
 
-	pub fn update_centers(&self,assignments) {
+	// pub fn update_centers(&self, assignments) {
 
 	
-	}
+	// }
     
         // new_means = collections.defaultdict(list)
 
@@ -45,4 +46,39 @@ impl<T:Clone+Num> KMeans<T> {
         //     centers.append(self.__point_avg(points))
 
         // return centers
+    fn generate_k(&self, k: uint) -> Matrix<T>{
+    	let mut ks = Matrix::new(k, self.data.col);
+
+    	
+
+
+        //找出所有点坐标中，最大的坐标和最小的坐标
+        for (idx, dim) in (!self.data).rows().enumerate() {
+        	let (max, min) = dim.iter().map(|x| x.clone()).fold((zero(), zero()),
+        		|acc, b| {
+        	 		match acc {
+        	 			(max, min) if b > max => (b, min),
+        	 			(max, min) if b < min => (max, min),
+        	 			_ => acc
+        	 		}
+        		});
+
+        	for i in range(0, k) { ks.set(i, idx, StdRng::new().unwrap().gen_range(min, max)) }
+        }
+
+       	ks
+    }
+
+    pub fn k_means(&self, k: uint) {
+    	let centers = self.generate_k(k);
+    	        
+	}
+    //     assignments = self.__assign_points(centers)
+    //     old_assignments = None
+    //     while assignments != old_assignments:
+    //         centers = self.__update_centers(assignments)
+    //         old_assignments = assignments
+    //         assignments = self.__assign_points(centers)
+    //     return (zip(assignments, self.__matrix),centers)
+    // }
 }

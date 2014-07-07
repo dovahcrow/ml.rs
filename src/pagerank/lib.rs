@@ -1,14 +1,49 @@
 //! Pagerank -- Pagerank Algorithm in Rust
 
 #![crate_id = "pagerank#0.0.1"]
-#![crate_type="lib"]
+#![crate_type = "lib"]
+#![crate_type = "dylib"]
 #![allow(unused_must_use)]
 #![deny(missing_doc)]
 extern crate matrixrs;
+extern crate libc;
+// extern crate alloc;
 use matrixrs::Matrix;
 use matrixrs::zeros;
 use matrixrs::ToMatrix;
+use libc::{c_ulong, c_double};
+use std::mem::transmute;
 
+#[no_mangle] 
+pub unsafe extern "C" fn pagerank_c(
+	adjm: *const c_double,
+	adjm_size: c_ulong,
+	rank: *const c_double,
+	max_iter: c_ulong,
+	q: c_double,
+	eps: c_double,
+	ret_matrix: *const c_double
+	) {
+	//! export to C interface
+
+	let adjm_vec: &[f64] = transmute((adjm, adjm_size * adjm_size));
+	let adjmatrix = adjm_vec.iter().map(|x| x.clone()).to_matrix(adjm_size as uint, adjm_size as uint);
+	let rank_vec:&[f64] = transmute((rank, adjm_size));
+	let rankmatrix = rank_vec.iter().map(|x| x.clone()).to_matrix(adjm_size as uint, 1);
+	let ret = pagerank(&adjmatrix, &rankmatrix, max_iter as uint, q, eps);
+	// let ret_v: &mut [f64] = transmute((ret_matrix, adjm_size));
+
+	// let buf = alloc::heap::allocate(adjm_size as uint, std::mem::min_align_of::<c_double>());
+	// let dst: &mut [c_double] = transmute((buf, adjm_size));
+
+	for (index, i) in ret.iter().enumerate() {
+		std::ptr::write(ret_matrix.offset(index as int) as *mut c_double, i as c_double);
+		// dst[index] = i; 
+	}
+	// buf as *const c_double
+
+
+}
 pub fn pagerank(adjm: &Matrix<f64>, rank: &Matrix<f64>, max_iter: uint, q: f64, eps: f64) -> Matrix<f64> {
 	//! adjm is the adjacent matrix, and rank is the initial rank matrix,
 	//! and max_iter is the maximum iterater time, and q is conventional 0.85,

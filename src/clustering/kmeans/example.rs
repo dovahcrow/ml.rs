@@ -9,6 +9,6 @@ fn main() {
 	9,20,11,12,
 	13,14,15,16
 	];
-	let center = kmeans::KMeans::gen_center(a.iter().map(|x| x.clone()).to_matrix(4,4));
+	let center = kmeans::KMeans::gen_center(&a.iter().map(|x| x.clone()).to_matrix(4,4));
 	println!("{}",center);
 }
