@@ -69,6 +69,13 @@ impl<T:Primitive+SampleRange+Default> KMeans<T> {
        	ks
     }
 
+    fn euclid_distance(ths: &Matrix<T>, rhs: &Matrix<T>) -> f64 {
+    	ths.iter().zip(rhs.iter()).fold(0f64, |acc, (a,b)| {
+    		acc + (NumCast::from(a).unwrap_or(0f64) - NumCast::from(b).unwrap_or(0f64)).powi(2)
+    		// TODO fix the unwrap_or
+    	}).sqrt()
+    }
+
     pub fn k_means(&self, k: uint) {
     	let centers = self.generate_k(k);
     	        
