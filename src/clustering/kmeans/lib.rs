@@ -22,15 +22,33 @@ impl<T:Primitive+SampleRange+Default> KMeans<T> {
 		}
 	}
 
-	pub fn gen_center(points: &Matrix<T>) -> Matrix<T> {
+	fn gen_center(points: &Matrix<T>) -> Matrix<T> {
 		let mut rev_points = !points;
 
 		rev_points.rows().map(
 			|row| -> T {
-				row.iter().fold(zero(),|acc: T, b| acc + *b)
+				row.iter().fold(zero(),|acc: T, b| acc + *b) / rev_points.num_col
 		}).to_matrix(1, points.col) 
 	}
+	fn assign_points(&self, centers: Matrix<T>) -> Vec<uint> {
+		self.data.rows().map(
+			|row| {
+				row.
+			}
+		)
+		}
+		assignments = []
+        for point in self.__matrix:
+            shortest = float("inf")  #正无穷
+            shortest_index = 0
+            for i in range(len(centers)):
+                val = self.__distance(point, centers[i])
+                if val < shortest:
+                   shortest = val
+                   shortest_index = i
 
+            assignments.append(shortest_index)
+	}
 	// pub fn update_centers(&self, assignments) {
 
 	
@@ -47,12 +65,9 @@ impl<T:Primitive+SampleRange+Default> KMeans<T> {
 
         // return centers
     fn generate_k(&self, k: uint) -> Matrix<T>{
+		//!找出所有点坐标中，最大的坐标和最小的坐标
     	let mut ks = Matrix::new(k, self.data.col);
-
-    	
-
-
-        //找出所有点坐标中，最大的坐标和最小的坐标
+        
         for (idx, dim) in (!self.data).rows().enumerate() {
         	let (max, min) = dim.iter().map(|x| x.clone()).fold((zero(), zero()),
         		|acc, b| {
