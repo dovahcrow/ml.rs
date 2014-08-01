@@ -1,21 +1,16 @@
 //! Pagerank -- Pagerank Algorithm in Rust
-
-#![crate_id = "pagerank#0.0.1"]
-#![crate_type = "lib"]
-#![crate_type = "dylib"]
-#![allow(unused_must_use)]
+#![stable]
 #![deny(missing_doc)]
 extern crate matrixrs;
 extern crate libc;
-// extern crate alloc;
-use matrixrs::Matrix;
-use matrixrs::zeros;
-use matrixrs::ToMatrix;
-use libc::{c_ulong, c_double};
-use std::mem::transmute;
 
+use self::matrixrs::{Matrix,zeros,ToMatrix};
+use self::libc::{c_ulong, c_double};
+use std::mem::transmute;
+use std::ptr;
+#[cfg(not(test))]
 #[no_mangle] 
-pub unsafe extern "C" fn pagerank_c(
+pub unsafe fn pagerank_c(
 	adjm: *const c_double,
 	adjm_size: c_ulong,
 	rank: *const c_double,
@@ -37,13 +32,12 @@ pub unsafe extern "C" fn pagerank_c(
 	// let dst: &mut [c_double] = transmute((buf, adjm_size));
 
 	for (index, i) in ret.iter().enumerate() {
-		std::ptr::write(ret_matrix.offset(index as int) as *mut c_double, i as c_double);
+		ptr::write(ret_matrix.offset(index as int) as *mut c_double, i as c_double);
 		// dst[index] = i; 
 	}
 	// buf as *const c_double
-
-
 }
+
 pub fn pagerank(adjm: &Matrix<f64>, rank: &Matrix<f64>, max_iter: uint, q: f64, eps: f64) -> Matrix<f64> {
 	//! adjm is the adjacent matrix, and rank is the initial rank matrix,
 	//! and max_iter is the maximum iterater time, and q is conventional 0.85,
@@ -53,16 +47,16 @@ pub fn pagerank(adjm: &Matrix<f64>, rank: &Matrix<f64>, max_iter: uint, q: f64, 
 
 	let tmp = (adjm * [1f64, 1., 1., 1.].iter().map(|x| x.clone()).to_matrix(1,4).transpose()).map(|v| 1. / v);
 
-	let mut z: Matrix<f64> = zeros(adjm.row, adjm.col);
+	let mut z: Matrix<f64> = zeros(adjm.nrow, adjm.ncol);
 	for (i,v) in tmp.iter().enumerate() {
 		z.set(i+1, i+1 ,v)
 	}
 
 	let mt = !(z * adjm);
 
-	let mt = Matrix::from_fn(mt.row, mt.col, |i,j| mt.at(i,j) * q);
+	let mt = Matrix::from_fn(mt.nrow, mt.ncol, |i,j| mt.at(i,j) * q);
 
-	let e = Matrix::from_fn(mt.row, mt.col, |_,_| (1f64-q) / mt.col as f64);
+	let e = Matrix::from_fn(mt.nrow, mt.ncol, |_,_| (1f64-q) / mt.ncol as f64);
 	for _ in range(0,max_iter) {
 		let new_rank = (mt + e)* rank;
 		if (rank - new_rank).iter().fold(0f64,|acc,b| acc + b.abs()) < eps {
@@ -74,19 +68,18 @@ pub fn pagerank(adjm: &Matrix<f64>, rank: &Matrix<f64>, max_iter: uint, q: f64, 
 	rank
 }
 
-
+#[cfg(test)]
 mod test {
-	extern crate matrixrs;
+	#[phase(plugin, link)] extern crate matrixrs;
 
 	#[test]
 	fn test_1() {
-	let vec: &[f64] = &[
-		0., 1., 0., 1.,
-		1., 0., 1., 0.,
-		0., 1., 0., 0.,
-		0., 0., 1., 0.,
-		];
-	let adjm = vec.iter().map(|x| x.clone()).to_matrix(4,4);
+	let adjm: Matrix<f64> = matrix!(
+		[0., 1., 0., 1.]
+		[1., 0., 1., 0.]
+		[0., 1., 0., 0.]
+		[0., 0., 1., 0.]
+		);
 
 	let mut rank = [0.2f64,0.4,0.2,0.2].iter().map(|x| x.clone()).to_matrix(1,4).transpose();
 

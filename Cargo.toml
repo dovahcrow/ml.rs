@@ -1,21 +1,14 @@
 [package]
-name = "machine learning"
+name = "ml"
 version = "0.0.1"
 authors = [ "wooya@silic.org" ]
 
 [dependencies.matrixrs]
 name = "matrixrs"
 git = "https://github.com/doomsplayer/matrixrs"
-
-[[lib]]
-name = "kmeans"
-path = "src/clustering/kmeans/lib.rs"
-
+[dependencies.gnuplot]
+git = "https://github.com/SiegeLord/RustGnuplot"
 
 [[bin]]
-name = "kmeans-example"
-path = "src/clustering/kmeans/example.rs"
-
-[[lib]]
-name = "pagerank"
-path = "src/pagerank/lib.rs"
+name = "tst"
+path = "test/test.rs"
