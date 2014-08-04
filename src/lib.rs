@@ -5,3 +5,4 @@
 pub mod pagerank;
 pub mod decisionTree;
 pub mod clustering;
+pub mod statistics;

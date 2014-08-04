@@ -1,15 +1,14 @@
 [package]
 name = "ml"
 version = "0.0.1"
-authors = [ "wooya@silic.org" ]
+authors = [ "wooya <doomsplayer@gmail.com>" ]
 
 [dependencies.matrixrs]
 name = "matrixrs"
 git = "https://github.com/doomsplayer/matrixrs"
 [dependencies.gnuplot]
 git = "https://github.com/SiegeLord/RustGnuplot"
-[dependencies.nalgebra]
-git = "https://github.com/sebcrozet/nalgebra"
+
 [[bin]]
 name = "tst"
 path = "test/test.rs"
