@@ -1,3 +1,3 @@
 pub trait Distribution<T> {
-	pub fn emit(&self) -> T 
+	fn emit(&self) -> T;
 }

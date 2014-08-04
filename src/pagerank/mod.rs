@@ -8,6 +8,7 @@ use self::matrixrs::{Matrix,zeros,ToMatrix};
 use self::libc::{c_ulong, c_double};
 use std::mem::transmute;
 use std::ptr;
+
 #[cfg(not(test))]
 #[no_mangle] 
 pub unsafe fn pagerank_c(
