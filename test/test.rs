@@ -1,13 +1,23 @@
 #![feature(globs)]
 extern crate gnuplot;
+extern crate ml;
 use gnuplot::figure::Figure;
 use gnuplot::AxesCommon;
 use gnuplot::options::*;
+use std::rand::task_rng;
+use std::rand::Rng;
 // use gnuplot::coordinates::*;
 
 fn main() {
-	let x: Vec<f64> = range(0i,100).map(|x| x as f64 / 20f64).collect();
-	let y: Vec<f64> = x.iter().map(|&x| (x as f64).sin()).collect();
+	use ml::statistics::distributions::poisson::Poisson;
+	use ml::statistics::distributions::Distribution;
+
+	let mut p: Poisson<uint> = Poisson::new(3);
+
+	println!("{}", p.emit());
+
+	let x: Vec<f64> = range(0i,100).map(|x| x as f64).collect();
+	let y: Vec<f64> = x.iter().map(|_| p.iter().next().unwrap().to_f64().unwrap()).collect();
 
 	let mut figure = Figure::new();
 	figure.axes2d()

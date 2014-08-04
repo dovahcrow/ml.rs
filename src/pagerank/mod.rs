@@ -72,7 +72,7 @@ pub fn pagerank(adjm: &Matrix<f64>, rank: &Matrix<f64>, max_iter: uint, q: f64, 
 #[cfg(test)]
 mod test {
 	#[phase(plugin, link)] extern crate matrixrs;
-
+	use self::matrixrs::{ToMatrix,Matrix};
 	#[test]
 	fn test_1() {
 	let adjm: Matrix<f64> = matrix!(
@@ -82,9 +82,9 @@ mod test {
 		[0., 0., 1., 0.]
 		);
 
-	let mut rank = [0.2f64,0.4,0.2,0.2].iter().map(|x| x.clone()).to_matrix(1,4).transpose();
+	let mut rank: Matrix<f64> = [0.2f64,0.4,0.2,0.2].iter().map(|x| x.clone()).to_matrix(1,4).transpose();
 
-	rank = ::pagerank(&adjm,&rank, 1000, 0.85, 0.001); 	
+	rank = super::pagerank(&adjm, &rank, 1000, 0.85, 0.001); 	
 	println!("{},{}",rank,rank.iter().fold(0f64,|acc,b| acc+b));  	
 	
 	}
